@@ -1,0 +1,31 @@
+version: "3.5"
+
+networks:
+  system_traefik:
+    external: true
+
+services:
+  proxy:
+    restart: always
+    image: nginx:latest
+    ports:
+      - 8443:8443
+      - 443:443
+    networks:
+      - system_traefik
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/certs
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  whoami:
+    restart: always
+    image: stefanscherer/whoami
+    networks:
+      - system_traefik
+
+  drwho:
+    restart: always
+    image: jwilder/whoami
+    networks:
+      - system_traefik
